@@ -26,7 +26,7 @@ $status (opcional)
         if (isset($objeto->fecha))
             $o->canal=$objeto->canal;
         else
-            $o->canal='WEB';
+            $o->canal='APP';
 
         $o->idcanal=$objeto->idcanal;
 
