@@ -2,6 +2,7 @@
 
 namespace App\Servicio;
 use App\Models\Orden;
+use App\Models\DetalleOrden;
 
 class ServicioOrden
 {
@@ -45,5 +46,24 @@ $status (opcional)
 
         $o->num_productos=0;
         $o->save();
+
+        foreach($objetos->productos as $elementos){
+            $d=new DetalleOrden();
+            $d->idorden=$o->id;
+            $d->idproducto=$elemento['id'];
+            if((isset($elemento['cantidad'])))
+            $d->cantidad=$elemento['cantidad'];
+        else
+            $d->cantidad=1;
+
+        $d->precio=$elemento['precio'];
+
+        if((isset($elemento['idpromocion'])))
+            $d->idpromocion=$elemento['idpromocion'];
+        else
+            $d->idpromocion=0;
+
+        $d->save();
+        }
     }
 }
