@@ -132,8 +132,6 @@ class CoffeshopController extends Controller
         $x = new \stdClass();
         $x->idcliente = 1;
         $x->idusuario = 1;
-        $x->canal = "WEB";
-        $x->idcanal = 0;
         $x->productos = $context;
         $s->registrar($x);
         //return response()->json($context);

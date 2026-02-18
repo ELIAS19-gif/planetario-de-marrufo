@@ -10,8 +10,8 @@ class ServicioOrden
 $productos ed Lista de la oredn
 $idcliente es quiene esta comprando
 $idusuario es quien esta realizando la compra
-$canal representa el canal de venta
-$idcanal representa el identidicador del canal
+$canal (opcional) representa el canal de venta
+$idcanal (opcional) representa el identidicador del canal
 $fecha (opcional) representa la fecha de venta
 $status (opcional)
  */
@@ -23,12 +23,15 @@ $status (opcional)
         $o->idcliente=$objeto->idcliente;
         $o->total = 0;
         
-        if (isset($objeto->fecha))
+        if (isset($objeto->canal))
             $o->canal=$objeto->canal;
         else
             $o->canal='WEB';
 
-        $o->idcanal=$objeto->idcanal;
+        if (isset($objeto->idcanal))
+            $o->idcanal=$objeto->idcanal;
+        else
+            $o->idcanal=0;
 
         if (isset($objeto->fecha))
             $o->fecha=$objeto->fecha;
