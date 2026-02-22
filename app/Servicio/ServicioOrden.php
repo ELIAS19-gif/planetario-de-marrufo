@@ -23,6 +23,7 @@ $status (opcional)
         $o->idusuario=$objeto->idusuario;
         $o->idcliente=$objeto->idcliente;
         $o->total = 0;
+        $num_productos=0;
         
         if (isset($objeto->canal))
             $o->canal=$objeto->canal;
@@ -47,7 +48,11 @@ $status (opcional)
         $o->num_productos=0;
         $o->save();
 
-        foreach($objetos->productos as $elementos){
+        $total=0;
+        $o->num_productos=0;
+
+
+        foreach($objeto->productos as $elemento){
             $d=new DetalleOrden();
             $d->idorden=$o->id;
             $d->idproducto=$elemento['id'];
@@ -63,7 +68,25 @@ $status (opcional)
         else
             $d->idpromocion=0;
 
+        $total=$total+($d->cantidad*$d->precio);
+        $num_productos=$num_productos+$d->cantidad;
+
+         foreach($elemento['extras'] as $extra){
+            $ex=new ExtraOrden();
+            $ex->idextra=$extra['id'];
+            if((isset($extra['cantidad'])))
+            $ex->cantidad=$extra['cantidad'];
+        else
+            $ex->cantidad=1; 
+            
+        }
+
         $d->save();
         }
+
+        $o->total=$total;
+        $o->num_productos=$num_productos;
+        $o->save();
+        
     }
 }

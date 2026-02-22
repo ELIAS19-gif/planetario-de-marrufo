@@ -597,7 +597,6 @@
                                   self.tamanios.push(info[e]);
                                   console.log(self.tamanios);
                                 }
-
                         }
                         else{
                             alert('Algo salio mal');
@@ -605,10 +604,8 @@
                     }
                     }
                   xhr.send();
-
-
           }
-
+    
         });
 
     </script>
