@@ -7,6 +7,8 @@ use App\Http\Controllers\CategoriaExtraController;
 use App\Http\Controllers\TamanioController;
 use App\Http\Controllers\ExtraController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\DbupController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -47,6 +49,10 @@ Route::get('/producto', [ProductoController::class, 'producto'])->name ('product
 Route::get('producto/formulario/{id?}', [ProductoController::class, 'formulario'])->name ('producto.formulario');
 Route::post('producto/guardar', [ProductoController::class, 'guardar'])->name ('producto.guardar');
 
+//DBup / faker
+Route::get('/dbup/cliente', [DbupController::class, 'clientes']);
+Route::get('/dbup/orden', [DbupController::class, 'orden']);
+Route::get('/dashboard/ventas', [DashboardController::class, 'total_venta']);
 });
 
 

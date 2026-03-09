@@ -1,0 +1,16 @@
+function total_ventas($objeto){
+        if(!isset($objeto->meses)){
+            $objeto->meses=3;
+    }
+        //1.-Defino la Consulta Base
+        $consulta=DB::table('orden')
+                    ->select(
+                        DB::Raw('Sum(orden.total)')
+                    )
+                    ->whereRaw("DATE_SUB(now(), INTERVAL ".$objeto->meses."MONTH")
+
+    // 2.-Configuro la Consulta
+
+    // 3.-Ejecuto la COnsulta
+    return $consulta->get();
+    }

@@ -249,12 +249,16 @@
               </label>
             </div>
             <div class="flex px-4 py-3">
+
               <button
+              :disabled="procesando_orden"
               @click="guardar_orden"
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 flex-1 bg-[#ec9213] text-[#181511] text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <span class="truncate">Complete Order</span>
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 flex-1 bg-[#ec9213] text-[#181511] text-sm font-bold leading-normal tracking-[0.015em]">
+
+              <svg v-if="procesando_orden" width="50" heidg fill="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><filter id="spinner-gF01"><feGaussianBlur in="SourceGraphic" stdDeviation="1" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF01)"><circle cx="5" cy="12" r="4"><animate attributeName="cx" calcMode="spline" dur="2s" values="5;8;5" keySplines=".36,.62,.43,.99;.79,0,.58,.57" repeatCount="indefinite"/></circle><circle cx="19" cy="12" r="4"><animate attributeName="cx" calcMode="spline" dur="2s" values="19;16;19" keySplines=".36,.62,.43,.99;.79,0,.58,.57" repeatCount="indefinite"/></circle><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></g></svg>                
+              <span v-else class="truncate">Complete Order</span>
               </button>
+
              <!--- boton de eliminar-->
               <button 
                 @click="eliminar"
@@ -282,68 +286,7 @@
 
             </div>
             </div>
-            <h3 class="text-[#181511] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Sweeteners</h3>
-            <div class="flex flex-wrap gap-3 p-4">
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Vanilla Syrup (+$0.30)
-                <input type="radio" class="invisible absolute" name="08ee64a3-441c-43a5-a764-48380f872bd4">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Caramel Syrup (+$0.30)
-                <input type="radio" class="invisible absolute" name="08ee64a3-441c-43a5-a764-48380f872bd4">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Hazelnut Syrup (+$0.30)
-                <input type="radio" class="invisible absolute" name="08ee64a3-441c-43a5-a764-48380f872bd4">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Honey (+$0.20)
-                <input type="radio" class="invisible absolute" name="08ee64a3-441c-43a5-a764-48380f872bd4">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Sugar (+$0.00)
-                <input type="radio" class="invisible absolute" name="08ee64a3-441c-43a5-a764-48380f872bd4">
-              </label>
-            </div>
-
-            <h3 class="text-[#181511] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Toppings</h3>
-            <div class="flex flex-wrap gap-3 p-4">
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Whipped Cream (+$0.40)
-                <input type="radio" class="invisible absolute" name="89364acb-0b64-4691-a734-ba66d4e039d9">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Cinnamon (+$0.10)
-                <input type="radio" class="invisible absolute" name="89364acb-0b64-4691-a734-ba66d4e039d9">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Cocoa Powder (+$0.10)
-                <input type="radio" class="invisible absolute" name="89364acb-0b64-4691-a734-ba66d4e039d9">
-              </label>
-            </div>
-            <h3 class="text-[#181511] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Temperature &amp; Size</h3>
-            <div class="flex flex-wrap gap-3 p-4">
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Hot (+$0.00)
-                <input type="radio" class="invisible absolute" name="117623c2-c8b3-4ab4-8721-8aabd5f4bb6c">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Iced (+$0.00)
-                <input type="radio" class="invisible absolute" name="117623c2-c8b3-4ab4-8721-8aabd5f4bb6c">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Small (+$0.00)
-                <input type="radio" class="invisible absolute" name="117623c2-c8b3-4ab4-8721-8aabd5f4bb6c">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Medium (+$0.50)
-                <input type="radio" class="invisible absolute" name="117623c2-c8b3-4ab4-8721-8aabd5f4bb6c">
-              </label>
-              <label class="text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[#e6e1db] px-4 h-11 text-[#181511] has-[:checked]:border-[3px] has-[:checked]:px-3.5 has-[:checked]:border-[#ec9213] relative cursor-pointer">
-                Large (+$1.00)
-                <input type="radio" class="invisible absolute" name="117623c2-c8b3-4ab4-8721-8aabd5f4bb6c">
-              </label>
-            </div>
+            
             <p class="text-[#897961] text-sm font-normal leading-normal pb-3 pt-1 px-4">Total Customization Cost: $1.30</p>
             <div class="flex px-4 py-3 justify-end">
               <button @click="extras=false" class="px-4 h-10 rounded-lg border border-[#e6e1db] hover:bg-[#f4f3f0] text-sm font-medium transition-all duration-200">Cancelar</button>
@@ -377,6 +320,7 @@
                    ,impuesto:.16
                    ,extras:false
                    ,producto_seleccionado:-1
+                   ,procesando_orden:false
 
 
               }
@@ -461,7 +405,13 @@
                         this.orden.splice(index,1);
                       }
 
-                      ,guardar_orden:function(){
+                      ,limpiar_orden:function(){
+                        this.orden.splice(0,this.orden.length);
+                      }
+
+                     ,guardar_orden:function(){
+                        console.log('Ha guardar se ha dicho');
+                        this.procesando_orden=true;
                             var self=this;
                             //El objetivo XMLHttpRequest es el encargado de hacer las peticiones asincronas
                             var xhr = new XMLHttpRequest();
@@ -470,26 +420,22 @@
                           xhr.open('POST', '/api/venta/save', true);
                           //Se hace esta linea para indicar a Javascript que este pendiente
                           //cuando el estado de la peticion cambie
-                          //xhr.onreadystatechange =  function(){
+                          xhr.onreadystatechange =  function(){
                           //En esta linea preguntamos si la conexion se ha terminado
-                              //if (this.readyState == 4){
+                              if (this.readyState == 4){
+                                self.procesando_orden=false;
                                 //Es que el resultado de la conexion sea exitoso
-                                //if (this.status == 200){
-                                    //En esta variable se encuentra el contenido de la respuesta
+                                if (this.status == 200){
+                                  alert('Orden guardada!!!');
+                                   // En esta variable se encuentra el contenido de la respuesta
                                     //Que viene del backend this.responseText
-                                  //  info=JSON.parse(this.responseText);
-                                    //console.log(info);
-                                    //for(e=0;e<info.length;e++){
-                                      //self.productos.push(info[e]);
-                                      //console.log(self.productos);
-                                    //}
-
-                           // }
-                           // else{
-                               // alert('Algo salio mal');
-                            //}
-                        //}
-                        //}
+                            }
+                           else{
+                               alert('Algo salio mal');
+                            }
+                            self.limpiar_orden();
+                        }
+                        }
                       xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                       xhr.send(JSON.stringify(this.orden));
 
