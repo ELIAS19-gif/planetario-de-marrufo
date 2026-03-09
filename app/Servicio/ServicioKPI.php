@@ -20,10 +20,12 @@ class ServicioKPI
     from orden
     whereDATE_SUB(now(), INTERVAL 3 MONTH)
 
-    selec SUM(orden.total)
-        ,DATE_FORMAT(orden.fecha %f-%d-%m)
-    from orden
-    whereDATE_SUB(now(), INTERVAL 3 MONTH)
+    SELECT SUM(orden.total) AS total_ventas,
+          DATE_FORMAT(orden.fecha,'%m-%Y') AS mes
+    FROM orden
+    WHERE orden.fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    GROUP BY DATE_FORMAT(orden.fecha,'%m-%Y')
+    ORDER BY mes DESC;
     */
 
     function total_ventas($objeto){
@@ -52,4 +54,106 @@ class ServicioKPI
     // 3.-Ejecuto la Consulta
             return $consulta->get();
             }
+
+    /*
+    Consulta Base
+    SELECT orden.canal,
+           ,SUM(orden.total) AS total_por_canal
+    FROM orden
+    WHERE orden.fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    GROUP BY orden.canal
+    ORDER BY total_por_canal;
+
+    Tendencia por Mes y Canal
+    SELECT orden.canal,
+        SUM(orden.total) AS total_por_canal,
+        DATE_FORMAT(orden.fecha,'%m-%y') AS mes
+    FROM orden
+    WHERE orden.fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    GROUP BY orden.canal, DATE_FORMAT(orden.fecha,'%m-%y')
+    ORDER BY mes;
+     */
+     function tendencias_canal($objeto) {
+        if (!isset($objeto->meses)) {
+            $objeto->meses = 3;
+        }
+
+        if (!isset($objeto->tendencias)) {
+            $objeto->tendencias=false;
+        }
+
+
+         // Defino la consulta base
+        $consulta = DB::table('orden')
+            ->select(
+                DB::RAW('sum(orden.total) as total')
+                ,"orden.canal"
+            )
+            ->whereRaw("orden.fecha>=DATE_SUB(now(),INTERVAL " . $objeto->meses . " MONTH)")
+            ->groupBy("orden.canal");
+            // ->orderBy(DB::RAW('sum(orden.total) as total'),"asc");
+
+             if ($objeto->tendencias) {
+            $consulta->groupBy(DB::raw("DATE_FORMAT(orden.fecha,'%m-%Y')"))
+                ->orderBy(DB::raw("DATE_FORMAT(orden.fecha,'%m-%Y')"), "desc")
+                ->addSelect(DB::raw("DATE_FORMAT(orden.fecha,'%m-%Y') as fecha"));
+        }
+
+        //    3.-Ejecuto la consulta
+        return $consulta->get();
+    }
+
+    // Producto mas vendido
+        // Producto menos vendido
+        // Tendencias por producto
+        /*
+                    SELECT 
+                producto.nombre,
+                SUM(detalle_orden.cantidad * detalle_orden.precio) AS total
+            FROM detalle_orden
+            JOIN producto 
+                ON detalle_orden.idproducto = producto.id
+            JOIN orden 
+                ON orden.id = detalle_orden.idorden
+            WHERE orden.fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+            GROUP BY producto.id
+            ORDER BY SUM(detalle_orden.cantidad * detalle_orden.precio) DESC;
+            */
+
+    function ventas_productos($objeto) {
+
+        if(!isset($objeto->meses)){
+                $objeto->meses=3;
+            }
+
+        if(!isset($objeto->tendencias)){
+                $objeto->tendencias=false;
+            }
+        if(!isset($objeto->idproducto)){
+                $objeto->idproducto=0;
+            }
+
+        $consulta=DB::table('orden')
+                 ->join('detalle_orden','detalle_orden.idorden','=','orden.id')
+                 ->join('producto','detalle_orden.idproducto','=','producto.id')
+                 ->select(
+                    "producto.nombre"
+                    ,DB::RAW("SUM(detalle_orden.cantidad * detalle_orden.precio) AS total")
+                 )
+                 ->whereRaw("orden.fecha>=DATE_SUB(now(),INTERVAL " . $objeto->meses . " MONTH)")
+                 ->groupBy("producto.id","producto.nombre")
+                 ->orderByRaw("SUM(detalle_orden.cantidad * detalle_orden.precio) DESC");
+            if ($objeto->tendencias){
+                $consulta->groupBy(DB::raw("DATE_FORMAT(orden.fecha,'%m-%Y')"))
+                    ->orderByRaw("DATE_FORMAT(orden.fecha,'%Y-%m') ASC")
+                    ->addSelect(DB::raw("DATE_FORMAT(orden.fecha,'%m-%Y') as fecha"));
+        }
+
+            if($objeto->idproducto!=0){
+                $consulta->where("producto.id",$objeto->idproducto);
+            }
+
+
+        return $consulta->get();
+    }
 }
