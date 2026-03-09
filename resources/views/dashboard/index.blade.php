@@ -10,10 +10,10 @@
     <title>Planetario Dashboard</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link rel="stylesheet" href="{{asset('public/apexcharts.css')}}">
+    <link rel="stylesheet" href="{{ asset('apexcharts.css') }}">
   </head>
   <body>
-    <div class="relative flex h-auto min-h-screen w-full flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Work Sans", "Noto Sans", sans-serif;'>
+    <div id="app" class="relative flex h-auto min-h-screen w-full flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Work Sans", "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
         <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f4f3f0] px-10 py-3">
           <div class="flex items-center gap-4 text-[#181511]">
@@ -67,7 +67,7 @@
                 <div class="flex items-start justify-between">
                   <div class="flex flex-col gap-2">
                     <p class="text-[#181511] text-base font-medium leading-normal">Ventas totales</p>
-                    <p class="text-[#181511] tracking-light text-[32px] font-bold leading-tight truncate">$1,250</p>
+                    <p class="text-[#181511] tracking-light text-[32px] font-bold leading-tight truncate">$@{{total_venta}}</p>
                     <div class="flex gap-1">
                       <p class="text-[#897961] text-base font-normal leading-normal">Promedio diario</p>
                       <p class="text-[#078810] text-base font-medium leading-normal">$1,250</p>
@@ -85,10 +85,11 @@
                 
                 <div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
                   <div>
-                    <evndchart
-                        :options="chartOptions"
-                        :series="chartOptions.series"></evndchart>
-
+                    <evndchart 
+                    v-if="series.length!=0"
+                    :options="Chart1.configuracion"
+                    :series="Chart1.series">
+                  </evndchart>
                   </div>
                   <div class="flex justify-around">
                     <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Mon</p>
@@ -108,17 +109,11 @@
                   <p class="text-[#897961] text-base font-normal leading-normal">Capuchino</p>
                   <p class="text-[#078810] text-base font-medium leading-normal">20</p>
                 </div>
-                <div class="grid min-h-[180px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3">
-                  <div class="border-[#897961] bg-[#f4f3f0] border-t-2 w-full" style="height: 20%;"></div>
-                  <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Latte</p>
-                  <div class="border-[#897961] bg-[#f4f3f0] border-t-2 w-full" style="height: 50%;"></div>
-                  <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Cappuccino</p>
-                  <div class="border-[#897961] bg-[#f4f3f0] border-t-2 w-full" style="height: 30%;"></div>
-                  <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Espresso</p>
-                  <div class="border-[#897961] bg-[#f4f3f0] border-t-2 w-full" style="height: 0%;"></div>
-                  <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Americano</p>
-                  <div class="border-[#897961] bg-[#f4f3f0] border-t-2 w-full" style="height: 60%;"></div>
-                  <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Mocha</p>
+                <div>
+                  <evndchart
+                        :options="configuracion1"
+                        :series="valores1"></evndchart>
+
                 </div>
               </div>
             </div>
@@ -193,22 +188,94 @@
         </div>
       </div>
     </div>
-    <script src="{{asset('public/apexcharts.js')}}"></script>
-    <script src="{{asset('public/vue.js')}}"></script>
-    <script src="{{asset('public/vue-apexcharts.js')}}"></script>
+      <script src="{{ asset('apexcharts.js') }}"></script>
+      <script src="{{ asset('vue.js') }}"></script>
+      <script src="{{ asset('vue-apexcharts.js') }}"></script>
+      <script src="{{ asset('plantillaColumna.js') }}"></script>
     <script>
         Vue.use(VueApexCharts)
         var app=new Vue({
             el: '#app',
             data:function(){
                 return{
+                  total_venta:0
+                  ,series:[]
+                ,valores1:[44, 55, 13, 43, 22]
+                ,configuracion1:{
+                    chart: {
+                    width: 380,
+                    type: 'pie',
+                  },
+                  labels: ['Canal A', 'Canal B', 'Canal C', 'Canal D', 'Canal E'],
+                  responsive: [{
+                    breakpoint: 480,
+                    options: {
+                      chart: {
+                        width: 200
+                      },
+                      legend: {
+                        position: 'bottom'
+                      }
+                    }
+                  }]
 
                 }
+              }
             }
             ,methods:{}
+            ,computed:{
+              Chart1:function (){
+                let plantilla = Columna();
+                plantilla.xaxis.categories.push('Ventas');
+
+                let final = {
+                  series: this.series,
+                  configuracion: plantilla
+                }
+
+                return final;
+              }
+            }
             ,components:{
                 evndchart: VueApexCharts,
-            },
+            }
+            ,created(){
+
+             var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/dashboard/ventas', true);
+                var self = this;
+                xhr.onreadystatechange = function() {
+                  if (this.readyState === 4) {
+                    //Pregunto si todo salio bien
+                  if (this.status === 200) {
+                    info=JSON.parse(this.responseText);
+                    console.log('Ya calleron los datos', info); 
+                    self.total_venta = info.total;
+                    for(i=0;i<info.tendencias.length;i++){
+                      for(i=0;i<info.tendencias.length;i++){
+                      self.series.push(
+                      {
+                        name: info.tendencias[i].fecha,
+                        data: [info.tendencias[i].total]
+                      });
+                    }
+                    }
+                  }
+                }
+              }
+              xhr.send();
+              /*
+                // Antes de pintar todo borro las etiquetas y las series
+                this.series1.splice(0, this.series1.length);
+                this.labels1.splice(0, this.labels1.length);
+                // Antes de pintar todo borro las etiquetas y las series
+                    // Pregunto si la conexión terminó
+                    if (this.readyState === 4) {
+                        // Pregunto si todo salió bien
+                          //Cadena a objeto
+               */
+            }
+                
         });
     </script>
   </body>

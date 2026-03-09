@@ -55,6 +55,7 @@ Route::get('/dbup/orden', [DbupController::class, 'orden']);
 Route::get('/dashboard/ventas', [DashboardController::class, 'total_venta']);
 Route::get('/dashboard/ventas/canal', [DashboardController::class, 'total_venta_canal']);
 Route::get('/dashboard/ventas/productos', [DashboardController::class, 'total_venta_producto']);
+Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
 

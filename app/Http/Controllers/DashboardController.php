@@ -11,6 +11,11 @@ use App\Servicio\ServicioKPI;
 use Faker\Factory as Faker;
 
 class DashboardController extends Controller{
+
+    function index(){
+        $datos=array();
+        return view('dashboard.index')->with($datos);
+    }
     
     function total_venta(){
         $servicio=new ServicioKPI();
