@@ -16,6 +16,8 @@ class DashboardController extends Controller{
     function index(){
         $datos=array();
         $datos['productos']=Producto::all();
+        $datos['edades']=Edad::all();
+        $datos['ocupaciones']=Ocupacion::all();
         $datos['generos']=array('Hombre','Mujer','No indica');
         return view('dashboard.index')->with($datos);
     }
@@ -91,9 +93,14 @@ class DashboardController extends Controller{
        return response()->json($resultado);
         
     }
-    function demografico_genero(){
+    function demografico_genero(Request $r){
+        $context = $r->all();
         $servicio=new ServicioKPI();
         $objeto=new \StdClass();
+        if(isset($context['idedad']))
+            $objeto->idedad=$context['idedad'];
+        if(isset($context['idocupacion']))
+            $objeto->idocupacion=$context['idocupacion'];
         $resultado=new \StdCLass();
         $resultado=$servicio->demografico_generos($objeto);
         //dd($info);

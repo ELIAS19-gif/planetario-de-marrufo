@@ -250,12 +250,23 @@ from cliente
 group by cliente.genero
 */
     function demografico_generos($objeto){
+        if(!isset($objeto->idedad))
+            $objeto->idedad=0;
+        if(!isset($objeto->idocupacion))
+            $objeto->idocupacion=0;
+
         $consulta=DB::table('cliente')
                     ->select(
                         'cliente.genero'
                         ,DB::Raw("count(*) as total")
                     )
                     ->groupBy('cliente.genero');
+            if($objeto->idedad!=0){
+                $consulta->where('cliente.idedad',$objeto->idedad);
+            }
+            if($objeto->idocupacion!=0){
+                $consulta->where('cliente.idocupacion',$objeto->idocupacion);
+            }
 
         return $consulta->get();
     }

@@ -129,8 +129,17 @@
             <!-- chart3 -->
              <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
               <p class="text-[#181511] text-base font-medium leading-normal">Usuarios X genero</p>
+              <div class="flex gap-2 items-center">
+                    <select v-model="filtro_chart_3.idedad" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                      <option value="">Todas las edades</option>
+                      <option v-for="edad in edades" :value="edad.id">@{{edad.nombre}}</option>
+                    </select>
+                    <select v-model="filtro_chart_3.idocupacion" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                      <option value="">Todas las ocupaciones</option>
+                      <option v-for="ocupacion in ocupaciones" :value="ocupacion.id">@{{ocupacion.nombre}}</option>
+                    </select>
+                  </div>
               <evndchart 
-                    
                     :options="Chart3.configuracion"
                     :series="Chart3.series">
                   </evndchart>
@@ -232,8 +241,14 @@
               valores1:[44, 55, 13, 43, 22]
               ,productos: <?php echo json_encode($productos);?>
               ,generos: <?php echo json_encode($generos);?>
+              ,edades: <?php echo json_encode($edades);?>
+              ,ocupaciones: <?php echo json_encode($ocupaciones);?>
               ,filtro_chart_1:0
               ,filtro_chart_2:''
+              ,filtro_chart_3:{
+                idedad:0
+                ,idocupacion:0
+              }
             }
           }
           ,computed:{
@@ -323,33 +338,30 @@
                                     ,_token:'{{csrf_token()}}'
                                   }));
           }              
-            ,filtro_chart_3:function(newValue){
-              //console.log('Este Producto Vamos a Enviar',newValue);
-              this.series2.splice(0,this.series2.length);
-              /*
-              
-              xhr.send(JSON.stringify(this.orden));
-              */
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST','/dashboard/demogratafico/genero',true);
-            var self=this;
-            xhr.onreadystatechange=function(){
-              if(this.readyState===4 && this.status===200){
-                let info=JSON.parse(this.responseText);
-                for(let i=0;i<info.categorias.length;i++){
-                  self.series2.push({
-                    name:info.categorias[i].nombre,
-                    data:[info.categorias[i].total]
-                  });
+            ,filtro_chart_3:{
+              handler:function(newValue){
+              console.log(newValue);
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST','/dashboard/demogratafico/genero',true);
+              var self=this;
+              xhr.onreadystatechange=function(){
+                if(this.readyState===4 && this.status===200){
+                  self.series3.splice(0,self.series3.length);
+                  let info=JSON.parse(this.responseText); 
+                  for(let i=0;i<info.length;i++){
+                    self.series3.push(info[i]);
+                  }
                 }
               }
-            }
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({
-                                    genero:newValue
+              xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+              xhr.send(JSON.stringify({
+                                    idocupacion:newValue.idocupacion
+                                    ,idedad:newValue.idedad
                                     ,_token:'{{csrf_token()}}'
                                   }));
-          }              
+              }
+              ,deep:true
+            }
         }
           ,components:{
             evndchart: VueApexCharts
