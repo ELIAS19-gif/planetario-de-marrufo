@@ -24,9 +24,13 @@ class DashboardController extends Controller{
         // dd($context);
         $servicio = new ServicioKPI();
         $objeto = new \StdClass();
+        if(isset($context['idproducto']))
+            $objeto->idproducto=$context['idproducto'];
         $info = $servicio->total_ventas($objeto);
 
         $objeto1 = new \StdClass();
+        if(isset($context['idproducto']))
+            $objeto1->idproducto=$context['idproducto'];
         $objeto1->tendencias = true;
         $info2 = $servicio->total_ventas($objeto1);
 

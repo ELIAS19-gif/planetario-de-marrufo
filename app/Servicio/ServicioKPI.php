@@ -49,7 +49,7 @@ class ServicioKPI
 
     function total_ventas($objeto){
     if(!isset($objeto->meses)){
-        $objeto->meses=3;
+        $objeto->meses=2;
     }
 
     if(!isset($objeto->tendencias)){
@@ -78,7 +78,7 @@ class ServicioKPI
                     DB::raw('SUM(detalle_orden.precio*detalle_orden.cantidad) as total')
                 )
                 ->whereRaw("orden.fecha>=DATE_SUB(now(), INTERVAL ".$objeto->meses." MONTH)")
-                ->where('detalle_orden.ideproducto',$objeto->idproducto);
+                ->where('detalle_orden.idproducto',$objeto->idproducto);
 
     }
     
