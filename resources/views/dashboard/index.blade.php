@@ -74,11 +74,9 @@
                     </div>
                   </div>
                   <div class="flex items-center">
-                    <select class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
-                      <option value="today">Today</option>
-                      <option selected="" value="last7">Last 7 Days</option>
-                      <option value="month">This Month</option>
-                      <option value="year">This Year</option>
+                    <select v-model="filtro_chart_1" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                      <option value="0">Todos</option>
+                      <option v-for="producto in productos" :value="producto.id">@{{producto.nombre}}</option>
                     </select>
                   </div>
                 </div>
@@ -195,87 +193,93 @@
     <script>
         Vue.use(VueApexCharts)
         var app=new Vue({
-            el: '#app',
-            data:function(){
-                return{
-                  total_venta:0
-                  ,series:[]
-                ,valores1:[44, 55, 13, 43, 22]
-                ,configuracion1:{
-                    chart: {
-                    width: 380,
-                    type: 'pie',
-                  },
-                  labels: ['Canal A', 'Canal B', 'Canal C', 'Canal D', 'Canal E'],
-                  responsive: [{
-                    breakpoint: 480,
-                    options: {
-                      chart: {
-                        width: 200
-                      },
-                      legend: {
-                        position: 'bottom'
-                      }
-                    }
-                  }]
-
-                }
-              }
-            }
-            ,methods:{}
-            ,computed:{
-              Chart1:function (){
-                let plantilla = Columna();
-                plantilla.xaxis.categories.push('Ventas');
-
-                let final = {
-                  series: this.series,
-                  configuracion: plantilla
-                }
-
-                return final;
-              }
-            }
-            ,components:{
-                evndchart: VueApexCharts,
-            }
-            ,created(){
-
-             var xhr = new XMLHttpRequest();
-                xhr.open('GET', '/dashboard/ventas', true);
-                var self = this;
-                xhr.onreadystatechange = function() {
-                  if (this.readyState === 4) {
-                    //Pregunto si todo salio bien
-                  if (this.status === 200) {
-                    info=JSON.parse(this.responseText);
-                    console.log('Ya calleron los datos', info); 
-                    self.total_venta = info.total;
-                    for(i=0;i<info.tendencias.length;i++){
-                      for(i=0;i<info.tendencias.length;i++){
-                      self.series.push(
-                      {
-                        name: info.tendencias[i].fecha,
-                        data: [info.tendencias[i].total]
-                      });
-                    }
-                    }
+          el: '#app',
+          data:function(){
+            return{
+              total_venta:0,
+              series:[],
+              valores1:[44, 55, 13, 43, 22],
+              configuracion1:{
+                chart:{
+                  width:380,
+                  type:'pie',
+                },
+                labels:['Canal A','Canal B','Canal C','Canal D','Canal E'],
+                responsive:[{
+                  breakpoint:480,
+                  options:{
+                    chart:{width:200},
+                    legend:{position:'bottom'}
                   }
+                }]
+              }
+              ,productos: <?php echo json_encode($productos);?>
+              ,filtro_chart_1:0
+            }
+          }
+          ,computed:{
+            Chart1:function (){
+              let plantilla = Columna();
+              plantilla.xaxis.categories.push('Ventas');
+              return{
+                series:this.series,
+                configuracion:plantilla
+              }
+            }
+          }
+          ,watch:{
+            filtro_chart_1:function(newValue){
+              console.log('Este Producto Vamos a Enviar',newValue);
+              this.series.splice(0,this.series.length);
+              /*
+              
+              xhr.send(JSON.stringify(this.orden));
+              */
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST','/dashboard/ventas',true);
+            var self=this;
+            xhr.onreadystatechange=function(){
+              if(this.readyState===4 && this.status===200){
+                let info=JSON.parse(this.responseText);
+                console.log('Ya cayeron los datos',info);
+                self.total_venta=info.total;
+                for(let i=0;i<info.tendencias.length;i++){
+                  self.series.push({
+                    name:info.tendencias[i].fecha,
+                    data:[info.tendencias[i].total]
+                  });
                 }
               }
-              xhr.send();
-              /*
-                // Antes de pintar todo borro las etiquetas y las series
-                this.series1.splice(0, this.series1.length);
-                this.labels1.splice(0, this.labels1.length);
-                // Antes de pintar todo borro las etiquetas y las series
-                    // Pregunto si la conexión terminó
-                    if (this.readyState === 4) {
-                        // Pregunto si todo salió bien
-                          //Cadena a objeto
-               */
             }
-                
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({
+                                    idproducto:newValue
+                                    ,_token:'{{csrf_token()}}'
+                                  }));
+          }              
+          }
+          ,components:{
+            evndchart: VueApexCharts
+          }
+          ,created(){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','/dashboard/ventas',true);
+            var self=this;
+            xhr.onreadystatechange=function(){
+              if(this.readyState===4 && this.status===200){
+                let info=JSON.parse(this.responseText);
+                console.log('Ya cayeron los datos',info);
+                self.total_venta=info.total;
+                for(let i=0;i<info.tendencias.length;i++){
+                  self.series.push({
+                    name:info.tendencias[i].fecha,
+                    data:[info.tendencias[i].total]
+                  });
+                }
+              }
+            }
+            xhr.send();
+          }
         });
     </script>
   </body>

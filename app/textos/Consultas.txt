@@ -1,0 +1,33 @@
+Sin filtro y Sin tendencias
+SELECT SUM(orden.total)
+    from orden
+    where DATE_SUB(now(), INTERVAL 3 MONTH)
+
+Con filtro y SIn tendencias
+SELECT SUM(detalle_orden.precio*detalle_orden.cantidad)as total
+    from orden
+    join detalle_orden on orden.id=detalle_orden.idorden
+    where DATE_SUB(now(), INTERVAL 3 MONTH)
+    and detalle_orden.idproducto=1
+
+Con filtro y tendencias
+SELECT SUM(detalle_orden.cantidad*detalle_orden.precio) as total
+          ,DATE_FORMAT(orden.fecha,'%m-%Y') as fecha
+    FROM orden
+    join detalle_orden on detalle_orden.idorden=orden.id
+    WHERE DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    AND detalle_orden.idproducto=13
+    GROUP BY DATE_FORMAT(orden.fecha,'%m-%Y')
+    ORDER BY DATE_FORMAT(orden.fecha,'%m-%Y') DESC;
+
+Sin filtro de  producto Con tendencias
+SELECT SUM(orden.total) as total
+          ,DATE_FORMAT(orden.fecha,'%m-%Y') as fecha
+    FROM orden
+    WHERE DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    GROUP BY DATE_FORMAT(orden.fecha,'%m-%Y')
+    ORDER BY DATE_FORMAT(orden.fecha,'%m-%Y') desc;
+
+
+para que me de 3 meses tube q cambiar el where por este
+->whereRaw("orden.fecha >= DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-01'), INTERVAL ".($objeto->meses-1)." MONTH)")

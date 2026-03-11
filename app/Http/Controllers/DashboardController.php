@@ -8,30 +8,31 @@ use App\Models\Edad;
 use App\Models\Ocupacion;
 use App\Models\Producto;
 use App\Servicio\ServicioKPI;
+use Illuminate\Http\Request;
 use Faker\Factory as Faker;
 
 class DashboardController extends Controller{
 
     function index(){
         $datos=array();
+        $datos['productos']=Producto::all();
         return view('dashboard.index')->with($datos);
     }
     
-    function total_venta(){
-        $servicio=new ServicioKPI();
-        $objeto=new \StdClass();
-        $info1=$servicio->total_ventas($objeto);
-        //dd($info1[0]);
+    function total_venta(Request $r){
+        $context = $r->all();
+        // dd($context);
+        $servicio = new ServicioKPI();
+        $objeto = new \StdClass();
+        $info = $servicio->total_ventas($objeto);
 
         $objeto1 = new \StdClass();
-        $objeto1->tendencias=true;
-        $objeto1->meses=6;
+        $objeto1->tendencias = true;
         $info2 = $servicio->total_ventas($objeto1);
-        // dd($info2);
 
-        $resultado=new \StdCLass();
-        $resultado->tendencias=$info2;
-        $resultado->total=$info1[0]->total;
+        $resultado = new \StdClass();
+        $resultado->tendencias = $info2;
+        $resultado->total = $info[0]->total;
 
         return response()->json($resultado);
     }
