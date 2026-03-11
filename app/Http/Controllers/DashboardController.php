@@ -91,4 +91,12 @@ class DashboardController extends Controller{
        return response()->json($resultado);
         
     }
+    function demografico_genero(){
+        $servicio=new ServicioKPI();
+        $objeto=new \StdClass();
+        $resultado=new \StdCLass();
+        $resultado=$servicio->demografico_generos($objeto);
+        //dd($info);
+        return response()->json($resultado);
+    }
 }

@@ -57,6 +57,7 @@ Route::match(['GET','POST'],'/dashboard/ventas', [DashboardController::class, 't
 Route::match(['GET','POST'],'/dashboard/ventas/categorias', [DashboardController::class, 'total_ventas_categorias']);
 Route::get('/dashboard/ventas/canal', [DashboardController::class, 'total_venta_canal']);
 Route::get('/dashboard/ventas/productos', [DashboardController::class, 'total_venta_producto']);
+Route::get('/dashboard/demogratafico/genero', [DashboardController::class, 'demografico_genero']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
 });
  
