@@ -49,6 +49,7 @@ class ServicioKPI
 
     function total_ventas($objeto){
     if(!isset($objeto->meses)){
+        //$objeto->meses=3;
         $objeto->meses=2;
     }
 
@@ -193,5 +194,53 @@ class ServicioKPI
 
 
         return $consulta->get();
+    }
+    /*
+    //SIN Filtro de Clientes
+    SELECT categoria.nombre
+       ,SUM(detalle_orden.precio*detalle_orden.cantidad)as total
+    from orden
+    join detalle_orden on orden.id=detalle_orden.idorden
+    join producto on producto.id=detalle_orden.idproducto
+    join categoria on categoria.id=producto.categoria
+    where DATE_SUB(NOW(), INTERVAL 3 MONTH);
+
+    //CON Filtro de Clientes
+    SELECT categoria.nombre,
+       SUM(detalle_orden.precio * detalle_orden.cantidad) AS total
+    FROM orden
+    JOIN detalle_orden ON orden.id = detalle_orden.idorden
+    JOIN producto ON producto.id = detalle_orden.idproducto
+    JOIN categoria ON categoria.id = producto.categoria
+    JOIN cliente ON orden.idcliente = cliente.id
+    WHERE orden.fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    AND cliente.genero = 'Mujer'
+    GROUP BY categoria.nombre;
+    */
+    function total_categorias($objeto){
+        if(!isset($objeto->genero))
+            $objeto->genero='';
+        
+        if(!isset($objeto->meses)){
+                $objeto->meses=3;
+            }
+
+        $consulta=DB::table('orden')
+                 ->join('detalle_orden','detalle_orden.idorden','=','orden.id')
+                 ->join('producto','detalle_orden.idproducto','=','producto.id')
+                 ->join('categoria','categoria.id','=','producto.categoria')
+                 ->select(
+                    "categoria.nombre"
+                    ,DB::RAW("SUM(detalle_orden.cantidad * detalle_orden.precio) AS total")
+                 )
+                 ->whereRaw("orden.fecha>=DATE_SUB(now(),INTERVAL " . $objeto->meses . " MONTH)")
+                 ->groupBy("categoria.nombre");
+
+                 if($objeto->genero=''){
+                    $consulta->join('cliente','orden.idcliente','=','cliente.id')
+                             ->where('cliente.genero',$objeto->genero);
+                 }
+
+                 return $consulta->get();
     }
 }

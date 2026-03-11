@@ -52,8 +52,9 @@ Route::post('producto/guardar', [ProductoController::class, 'guardar'])->name ('
 //DBup / faker
 Route::get('/dbup/cliente', [DbupController::class, 'clientes']);
 Route::get('/dbup/orden', [DbupController::class, 'orden']);
-Route::match(['GET','POST'],'/dashboard/ventas', [DashboardController::class, 'total_venta']);
 // Route::post('/dashboard/ventas', [DashboardController::class, 'total_venta']);
+Route::match(['GET','POST'],'/dashboard/ventas', [DashboardController::class, 'total_venta']);
+Route::match(['GET','POST'],'/dashboard/ventas/categorias', [DashboardController::class, 'total_ventas_categorias']);
 Route::get('/dashboard/ventas/canal', [DashboardController::class, 'total_venta_canal']);
 Route::get('/dashboard/ventas/productos', [DashboardController::class, 'total_venta_producto']);
 Route::get('/dashboard', [DashboardController::class, 'index']);

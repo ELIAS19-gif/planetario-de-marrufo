@@ -101,17 +101,25 @@
                 </div>
               </div>
               <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
-                <p class="text-[#181511] text-base font-medium leading-normal">Productos más vendidos</p>
+                <p class="text-[#181511] text-base font-medium leading-normal">Analisis x categoria</p>
                 <p class="text-[#181511] tracking-light text-[32px] font-bold leading-tight truncate">250</p>
                 <div class="flex gap-1">
                   <p class="text-[#897961] text-base font-normal leading-normal">Capuchino</p>
                   <p class="text-[#078810] text-base font-medium leading-normal">20</p>
                 </div>
-                <div>
-                  <evndchart
-                        :options="configuracion1"
-                        :series="valores1"></evndchart>
 
+                <div class="flex items-center">
+                    <select v-model="filtro_chart_2" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                      <option value="">Todos los Generos</option>
+                      <option v-for="genero in generos" :value="genero">@{{genero}}</option>
+                    </select>
+                  </div>
+                <div>
+                  <evndchart 
+                    v-if="series1.length!=0"
+                    :options="Chart2.configuracion"
+                    :series="Chart2.series">
+                  </evndchart>
                 </div>
               </div>
             </div>
@@ -198,6 +206,7 @@
             return{
               total_venta:0,
               series:[],
+              series1:[],
               valores1:[44, 55, 13, 43, 22],
               configuracion1:{
                 chart:{
@@ -214,7 +223,9 @@
                 }]
               }
               ,productos: <?php echo json_encode($productos);?>
+              ,generos: <?php echo json_encode($generos);?>
               ,filtro_chart_1:0
+              ,filtro_chart_2:''
             }
           }
           ,computed:{
@@ -222,14 +233,22 @@
               let plantilla = Columna();
               plantilla.xaxis.categories.push('Ventas');
               return{
-                series:this.series,
-                configuracion:plantilla
+                series:this.series
+                ,configuracion:plantilla
+              }
+            }
+            ,Chart2:function (){
+              let plantilla = Columna();
+              plantilla.xaxis.categories.push('Ventas');
+              return{
+                series:this.series1
+                ,configuracion:plantilla
               }
             }
           }
           ,watch:{
             filtro_chart_1:function(newValue){
-              console.log('Este Producto Vamos a Enviar',newValue);
+              //console.log('Este Producto Vamos a Enviar',newValue);
               this.series.splice(0,this.series.length);
               /*
               
@@ -257,11 +276,39 @@
                                     ,_token:'{{csrf_token()}}'
                                   }));
           }              
-          }
+            ,filtro_chart_2:function(newValue){
+              //console.log('Este Producto Vamos a Enviar',newValue);
+              this.series1.splice(0,this.series1.length);
+              /*
+              
+              xhr.send(JSON.stringify(this.orden));
+              */
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST','/dashboard/ventas/categorias',true);
+            var self=this;
+            xhr.onreadystatechange=function(){
+              if(this.readyState===4 && this.status===200){
+                let info=JSON.parse(this.responseText);
+                for(let i=0;i<info.categorias.length;i++){
+                  self.series2.push({
+                    name:info.categorias[i].nombre,
+                    data:[info.categorias[i].total]
+                  });
+                }
+              }
+            }
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({
+                                    genero:newValue
+                                    ,_token:'{{csrf_token()}}'
+                                  }));
+          }              
+        }
           ,components:{
             evndchart: VueApexCharts
           }
           ,created(){
+            //Datos del Chart1
             var xhr = new XMLHttpRequest();
             xhr.open('GET','/dashboard/ventas',true);
             var self=this;
@@ -274,6 +321,23 @@
                   self.series.push({
                     name:info.tendencias[i].fecha,
                     data:[info.tendencias[i].total]
+                  });
+                }
+              }
+            }
+            xhr.send();
+
+            //Datos del Chart2
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','/dashboard/ventas/categorias',true);
+            var self=this;
+            xhr.onreadystatechange=function(){
+              if(this.readyState===4 && this.status===200){
+                let info=JSON.parse(this.responseText); 
+                for(let i=0;i<info.categorias.length;i++){
+                  self.series1.push({
+                    name:info.categorias[i].nombre,
+                    data:[info.categorias[i].total]
                   });
                 }
               }

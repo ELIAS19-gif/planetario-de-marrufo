@@ -16,6 +16,7 @@ class DashboardController extends Controller{
     function index(){
         $datos=array();
         $datos['productos']=Producto::all();
+        $datos['generos']=array('Hombre','Mujer','No indica');
         return view('dashboard.index')->with($datos);
     }
     
@@ -74,8 +75,22 @@ class DashboardController extends Controller{
         //$objeto1->idproducto=3;
         $info2=$servicio->ventas_productos($objeto1);
         $resultado->tendencias=$info2;
-        dd($info2);
+        //dd($info2);
 
          return response()->json($resultado);
+    }
+
+    function total_ventas_categorias(Request $r){
+        $context = $r->all();
+        
+        $servicio=new ServicioKPI();
+        $objeto=new \StdClass();
+        if(isset($context['genero']))
+            $objeto->genero=$context['genero'];
+        $resultado=new \StdCLass();
+        $info=$servicio->total_categorias($objeto);
+        $resultado->categorias=$info;
+       return response()->json($resultado);
+        
     }
 }

@@ -31,3 +31,26 @@ SELECT SUM(orden.total) as total
 
 para que me de 3 meses tube q cambiar el where por este
 ->whereRaw("orden.fecha >= DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-01'), INTERVAL ".($objeto->meses-1)." MONTH)")
+o tengo que cambiar el 3 a 2 meses para que me de 3 meses poor q me da una de mas
+
+
+Consulta de categorias
+Sin filtro
+SELECT categoria.nombre
+       ,SUM(detalle_orden.precio*detalle_orden.cantidad)as total
+from orden
+join detalle_orden on orden.id=detalle_orden.idorden
+join producto on producto.id=detalle_orden.idproducto
+join categoria on categoria.id=producto.categoria
+where DATE_SUB(NOW(), INTERVAL 3 MONTH);
+
+Con Filtro
+SELECT categoria.nombre
+       ,SUM(detalle_orden.precio*detalle_orden.cantidad)as total
+from orden
+join detalle_orden on orden.id=detalle_orden.idorden
+join producto on producto.id=detalle_orden.idproducto
+join categoria on categoria.id=producto.categoria
+join cliente on orden.idcliente=cliente.id
+where DATE_SUB(NOW(), INTERVAL 3 MONTH);
+and cliente.genero='mujer'
