@@ -228,6 +228,7 @@
               series:[],
               series1:[],
               series2:[],
+              series3:[],
               valores1:[44, 55, 13, 43, 22]
               ,productos: <?php echo json_encode($productos);?>
               ,generos: <?php echo json_encode($generos);?>
@@ -255,8 +256,12 @@
             ,Chart3:function (){
               let plantilla=Pie();
               let final={
-              series:[44, 55, 13, 43, 22]
+              series:[]
               ,configuracion:plantilla
+              }
+              for(i=0;i<this.series3.length;i++){
+                final.series.push(this.series3[i].total)
+                final.configuracion.labels.push(this.series3[i].genero);
               }
               return final;
             }
@@ -318,6 +323,33 @@
                                     ,_token:'{{csrf_token()}}'
                                   }));
           }              
+            ,filtro_chart_3:function(newValue){
+              //console.log('Este Producto Vamos a Enviar',newValue);
+              this.series2.splice(0,this.series2.length);
+              /*
+              
+              xhr.send(JSON.stringify(this.orden));
+              */
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST','/dashboard/demogratafico/genero',true);
+            var self=this;
+            xhr.onreadystatechange=function(){
+              if(this.readyState===4 && this.status===200){
+                let info=JSON.parse(this.responseText);
+                for(let i=0;i<info.categorias.length;i++){
+                  self.series2.push({
+                    name:info.categorias[i].nombre,
+                    data:[info.categorias[i].total]
+                  });
+                }
+              }
+            }
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({
+                                    genero:newValue
+                                    ,_token:'{{csrf_token()}}'
+                                  }));
+          }              
         }
           ,components:{
             evndchart: VueApexCharts
@@ -354,6 +386,20 @@
                     name:info.categorias[i].nombre,
                     data:[info.categorias[i].total]
                   });
+                }
+              }
+            }
+            xhr.send();
+
+            //Datos del Chart3
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','/dashboard/demogratafico/genero',true);
+            var self=this;
+            xhr.onreadystatechange=function(){
+              if(this.readyState===4 && this.status===200){
+                let info=JSON.parse(this.responseText); 
+                for(let i=0;i<info.length;i++){
+                  self.series3.push(info[i]);
                 }
               }
             }

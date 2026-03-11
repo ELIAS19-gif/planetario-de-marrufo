@@ -4,7 +4,7 @@ function Pie() {
             width: 380,
             type: 'pie',
         },
-        labels: ['TeamA', 'Team B', 'Team C', 'Team D', 'Team E'],
+        labels: [],
         responsive: [{
             breakpoint: 480,
             options: {
