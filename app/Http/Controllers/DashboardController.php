@@ -76,13 +76,11 @@ class DashboardController extends Controller{
         $info2=$servicio->ventas_productos($objeto1);
         $resultado->tendencias=$info2;
         //dd($info2);
-
          return response()->json($resultado);
     }
 
     function total_ventas_categorias(Request $r){
         $context = $r->all();
-        
         $servicio=new ServicioKPI();
         $objeto=new \StdClass();
         if(isset($context['genero']))

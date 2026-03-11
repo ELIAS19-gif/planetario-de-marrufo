@@ -123,6 +123,25 @@
                 </div>
               </div>
             </div>
+            <!--Renglon 2 -->
+            <h2 class="text-[#181511] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Análisis demografico</h2>            
+            <div class="flex flex-wrap gap-4 px-4 py-6">
+            <!-- chart3 -->
+             <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
+              <p class="text-[#181511] text-base font-medium leading-normal">Usuarios X genero</p>
+              <evndchart 
+                    
+                    :options="Chart3.configuracion"
+                    :series="Chart3.series">
+                  </evndchart>
+             </div>
+             <!-- chart4 -->
+              <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
+              Aqui va la otra grafica 4
+             </div>
+            </div>
+            <!--Renglon 2 -->
+
             <div class="flex flex-wrap gap-4 px-4 py-6">
 <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6 relative">
 <div class="flex items-start justify-between">
@@ -198,6 +217,7 @@
       <script src="{{ asset('vue.js') }}"></script>
       <script src="{{ asset('vue-apexcharts.js') }}"></script>
       <script src="{{ asset('plantillaColumna.js') }}"></script>
+      <script src="{{ asset('PlantillaPie.js') }}"></script>
     <script>
         Vue.use(VueApexCharts)
         var app=new Vue({
@@ -207,21 +227,8 @@
               total_venta:0,
               series:[],
               series1:[],
-              valores1:[44, 55, 13, 43, 22],
-              configuracion1:{
-                chart:{
-                  width:380,
-                  type:'pie',
-                },
-                labels:['Canal A','Canal B','Canal C','Canal D','Canal E'],
-                responsive:[{
-                  breakpoint:480,
-                  options:{
-                    chart:{width:200},
-                    legend:{position:'bottom'}
-                  }
-                }]
-              }
+              series2:[],
+              valores1:[44, 55, 13, 43, 22]
               ,productos: <?php echo json_encode($productos);?>
               ,generos: <?php echo json_encode($generos);?>
               ,filtro_chart_1:0
@@ -244,6 +251,14 @@
                 series:this.series1
                 ,configuracion:plantilla
               }
+            }
+            ,Chart3:function (){
+              let plantilla=Pie();
+              let final={
+              series:[44, 55, 13, 43, 22]
+              ,configuracion:plantilla
+              }
+              return final;
             }
           }
           ,watch:{
@@ -290,7 +305,7 @@
               if(this.readyState===4 && this.status===200){
                 let info=JSON.parse(this.responseText);
                 for(let i=0;i<info.categorias.length;i++){
-                  self.series2.push({
+                  self.series1.push({
                     name:info.categorias[i].nombre,
                     data:[info.categorias[i].total]
                   });
