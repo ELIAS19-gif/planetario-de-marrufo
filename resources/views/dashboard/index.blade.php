@@ -148,6 +148,7 @@
               </evndchart>
             </div>
             <!-- Chart 5 -->
+
             <!--Renglon 2 -->
             <h2 class="text-[#181511] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Análisis demografico</h2>            
             <div class="flex flex-wrap gap-4 px-4 py-6">
@@ -407,7 +408,7 @@
 								}
 								xhr.setRequestHeader("Content-Type", "application/json");
 								xhr.send(JSON.stringify({
-									idproducto: this.filtro_chart,
+									idproducto: this.filtro_chart_1,
 									canal: newValue,
 									_token: '{{csrf_token()}}'
 								}));

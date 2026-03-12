@@ -60,6 +60,10 @@ class ServicioKPI
     if(!isset($objeto->idproducto)){
         $objeto->idproducto=0;
     }
+    if(!isset($objeto->canal)){
+        $objeto->canal='';
+    }
+
 
     //1.-Defino la Consulta Base
     if($objeto->idproducto==0){
@@ -80,6 +84,9 @@ class ServicioKPI
                 )
                 ->whereRaw("orden.fecha>=DATE_SUB(now(), INTERVAL ".$objeto->meses." MONTH)")
                 ->where('detalle_orden.idproducto',$objeto->idproducto);
+            if($objeto->canal!=''){
+                $consulta->where('orden.canal',$objeto->canal);
+            }
 
     }
     

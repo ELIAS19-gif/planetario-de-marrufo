@@ -30,11 +30,15 @@ class DashboardController extends Controller{
         $objeto = new \StdClass();
         if(isset($context['idproducto']))
             $objeto->idproducto=$context['idproducto'];
+        if(isset($context['canal']))
+            $objeto->canal=$context['canal'];
         $info = $servicio->total_ventas($objeto);
 
         $objeto1 = new \StdClass();
         if(isset($context['idproducto']))
             $objeto1->idproducto=$context['idproducto'];
+        if(isset($context['canal']))
+            $objeto->canal=$context['canal'];
         $objeto1->tendencias = true;
         $info2 = $servicio->total_ventas($objeto1);
 
@@ -44,6 +48,7 @@ class DashboardController extends Controller{
 
         return response()->json($resultado);
     }
+
     function total_venta_canal(){
         $servicio=new ServicioKPI();
         $objeto=new \StdClass();
