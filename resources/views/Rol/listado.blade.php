@@ -1,13 +1,13 @@
 @extends('app.master')
 
 @section('titulo')
-Ocupaciones
+Roles
 @endsection
 
 @section('contenido')
 <div class="col-md-12">
 
-    <a class="btn btn-info" href="{{ route ('ocupacion.formulario')}}">Agregar</a>
+    <a class="btn btn-info" href="{{ route ('rol.formulario')}}">Agregar</a>
 
     <table class="table">
         <tr>
@@ -20,7 +20,7 @@ Ocupaciones
             <td>{{$elemento->id}}</td>
 
             <td>
-                <a href="{{ route ('ocupacion.formulario', $elemento->id)}}">
+                <a href="{{ route ('rol.formulario', $elemento->id)}}">
                     {{$elemento->nombre}}
                 </a>
             </td>

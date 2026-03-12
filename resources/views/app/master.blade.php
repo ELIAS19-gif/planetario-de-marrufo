@@ -124,6 +124,30 @@
               <p>Productos</p>
             </a>
           </li>
+           <li class="nav-item">
+            <a href="{{ route ('lista') }}" class="nav-link">
+            
+              <p>Usuarios</p>
+            </a>
+          </li>
+           <li class="nav-item">
+            <a href="{{ route ('edad') }}" class="nav-link">
+            
+              <p>Edad</p>
+            </a>
+          </li>
+           <li class="nav-item">
+            <a href="{{ route ('ocupacion') }}" class="nav-link">
+            
+              <p>Ocupacion</p>
+            </a>
+          </li>
+           <li class="nav-item">
+            <a href="{{ route ('rol') }}" class="nav-link">
+            
+              <p>Rol</p>
+            </a>
+          </li>
           
 
         </ul>

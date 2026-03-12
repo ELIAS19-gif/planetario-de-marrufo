@@ -1,20 +1,20 @@
 @extends('app.master')
 
 @section('titulo')
-Ocupaciones
+Roles
 @endsection
 
 @section('contenido')
 <div class="col-md-12">
 
-    <form action="{{ route('ocupacion.guardar') }}" method="POST">
+    <form action="{{ route('rol.guardar') }}" method="POST">
         @csrf
 
-        <input type="hidden" class="form-control" name="id" value="{{$ocupacion->id}}">
+        <input type="hidden" class="form-control" name="id" value="{{$rol->id}}">
 
         <div class="form-group">
             <label>Nombre</label>
-            <input type="text" class="form-control" name="nombre" value="{{$ocupacion->nombre}}">
+            <input type="text" class="form-control" name="nombre" value="{{$rol->nombre}}">
         </div>
 
         <input type="submit" class="btn btn-primary" name="operacion" value="{{$operacion}}">
