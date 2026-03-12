@@ -73,26 +73,27 @@
                       <p class="text-[#078810] text-base font-medium leading-normal">$1,250</p>
                     </div>
                   </div>
-                  <div class="flex-col-gap-2">
-                  <select v-model="filtro_chart_1" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
-                    <option value="0">Todos</option>
-                    <option v-for="producto in productos" :value="producto.id">@{{producto.nombre}}</option>
-                  </select>
-                  <select v-model="filtro_canal" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
-                    <option value="">Todos los canales</option>
-                    <option v-for="canal in canales" :value="canal">@{{canal}}</option>
-                  </select>
-                </div>
-              </div>
-                
-                <div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
-                  <div>
-                    <evndchart 
-                    v-if="series.length!=0"
-                    :options="Chart1.configuracion"
-                    :series="Chart1.series">
-                  </evndchart>
-                  </div>
+
+                 <div class="flex-col-gap-2">
+									<select v-model="filtro_chart_1" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+										<option value="0">Todos</option>
+										<option v-for="producto in productos" :value="producto.id">@{{producto.nombre}}</option>
+									</select>
+									<select v-model="filtro_canal" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+										<option value="">Todos los canales</option>
+										<option v-for="canal in canales" :value="canal">@{{canal}}</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
+								<div>
+									<!-- Aqui va la grafica -->
+									<evndchart 
+                  :options="chart1.configuracion" 
+                  :series="chart1.series"></evndchart>
+								</div>
+
                   <div class="flex justify-around">
                     <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Mon</p>
                     <p class="text-[#897961] text-[13px] font-bold leading-normal tracking-[0.015em]">Tue</p>
@@ -105,27 +106,26 @@
                 </div>
               </div>
               <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
-                <p class="text-[#181511] text-base font-medium leading-normal">Analisis x categoria</p>
-                <p class="text-[#181511] tracking-light text-[32px] font-bold leading-tight truncate">250</p>
-                <div class="flex gap-1">
-                  <p class="text-[#897961] text-base font-normal leading-normal">Capuchino</p>
-                  <p class="text-[#078810] text-base font-medium leading-normal">20</p>
-                </div>
+							<p class="text-[#181511] text-base font-medium leading-normal">Analisis x categoria</p>
+							<p class="text-[#181511] tracking-light text-[32px] font-bold leading-tight truncate">250</p>
+							<div class="flex gap-1">
+								<p class="text-[#897961] text-base font-normal leading-normal">Capuchino</p>
+								<p class="text-[#078810] text-base font-medium leading-normal">20</p>
+							</div>
+							<div class="flex items-center">
+								<select v-model="filtro_chart_2" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+									<option value="">Todos</option>
+									<option v-for="genero in generos" :value="genero">@{{genero}}</option>
+								</select>
+							</div>
+							<!-- Aqui va la otra grafica -->
 
-                <div class="flex items-center">
-                    <select v-model="filtro_chart_2" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
-                      <option value="">Todos los Generos</option>
-                      <option v-for="genero in generos" :value="genero">@{{genero}}</option>
-                    </select>
-                  </div>
-                <div>
-                  <evndchart 
-                    v-if="series1.length!=0"
-                    :options="Chart2.configuracion"
-                    :series="Chart2.series">
-                  </evndchart>
-                </div>
-              </div>
+							<evndchart 
+              :options="chart2.configuracion" 
+              :series="chart2.series">
+            </evndchart>
+
+						</div>
             </div>
 
             <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
@@ -267,7 +267,8 @@
       <script src="{{ asset('plantillaColumna.js') }}"></script>
       <script src="{{ asset('PlantillaPie.js') }}"></script>
     <script>
-        Vue.use(VueApexCharts)
+        Vue.use(VueApexCharts);
+        Vue.component('apexchart', VueApexCharts);
         var app=new Vue({
           el: '#app',
           data:function(){
@@ -300,21 +301,23 @@
             }
           }
           ,computed:{
-            Chart1:function (){
-              let plantilla = Columna();
-              plantilla.xaxis.categories.push('Ventas');
-              return{
-                series:this.series
-                ,configuracion:plantilla
-              }
-            }
-            ,Chart2:function (){
-              let plantilla = Columna();
-              plantilla.xaxis.categories.push('Ventas');
-              return{
-                series:this.series1
-                ,configuracion:plantilla
-              }
+            chart1: function() {
+                let plantilla = Columna();
+                plantilla.xaxis.categories.push('Ventas');
+                let final = {
+                    series: this.series,
+                    configuracion: plantilla
+                }
+                return final;
+            },
+            chart2: function() {
+                let plantilla = Columna();
+                plantilla.xaxis.categories.push('Ventas');
+                let final = {
+                    series: this.series2,
+                    configuracion: plantilla
+                }
+                return final;
             }
             ,Chart3:function (){
               let plantilla=Pie();
@@ -354,64 +357,64 @@
 					}
           }
           ,watch:{
-            filtro_chart_1:function(newValue){
-              //console.log('Este Producto Vamos a Enviar',newValue);
-              this.series.splice(0,this.series.length);
-              /*
-              
-              xhr.send(JSON.stringify(this.orden));
-              */
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST','/dashboard/ventas',true);
-            var self=this;
-            xhr.onreadystatechange=function(){
-              if(this.readyState===4 && this.status===200){
-                let info=JSON.parse(this.responseText);
-                console.log('Ya cayeron los datos',info);
-                self.total_venta=info.total;
-                for (let i = 0; i < info.tendencias.length; i++) {
-                  self.series.push({
-                    name:info.tendencias[i].fecha,
-                    data:[info.tendencias[i].total]
-                  });
-                }
-              }
-            }
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({
-                                    idproducto:newValue
-                                    ,canal:this.filtro_canal
-                                    ,_token:'{{csrf_token()}}'
-                                  }));
-          }
-          ,filtro_canal:function(newValue){
-              this.series.splice(0,this.series.length);
-              var xhr = new XMLHttpRequest();
-              xhr.open('POST','/dashboard/ventas',true);
-              var self=this;
-              xhr.onreadystatechange=function(){
-                if(this.readyState===4 && this.status===200){
-                  let info=JSON.parse(this.responseText);
-                  self.total_venta=info.total;
-              for(let i=0;i<info.tendencias.length;i++){
-                  self.series.push({
-                    name:info.tendencias[i].fecha,
-                    data:[info.tendencias[i].total]
-              });
-            }
-          }
-        }
-              xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+            filtro_chart_1: function(newValue) {
+							this.series.splice(0, this.series.length);
+							console.log('Este producto vamos a enviar', newValue);
+							var xhr = new XMLHttpRequest();
+							xhr.open('POST', '/dashboard/ventas', true);
+							var self = this;
+							xhr.onreadystatechange = function() {
+								if (this.readyState == 4) {
+									//Pregunto si todo salio bien
+									if (this.status == 200) {
+										info = JSON.parse(this.responseText);
+										self.total_venta = info.total;
+										for (i = 0; i < info.tendencias.length; i++) {
+											self.series.push({
+												name: info.tendencias[i].fecha,
+												data: [parseFloat(info.tendencias[i].total)]
+											});
+										}
+										console.log('ya calleron los datos', info);
+									}
+								}
+							}
+							xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+							xhr.send(JSON.stringify({
+								idproducto: newValue,
+								canal: this.filtro_canal,
+								_token: '{{csrf_token()}}'
+							}));
+						}
+          ,filtro_canal: function(newValue) {
 
-              xhr.send(JSON.stringify({
-              idproducto:this.filtro_chart_1,
-              canal:newValue,
-              _token:'{{csrf_token()}}'
-            }));
-          }              
+								this.series.splice(0, this.series.length);
+
+								var xhr = new XMLHttpRequest();
+								xhr.open('POST', '/dashboard/ventas/canal', true);
+								var self = this;
+								xhr.onreadystatechange = function() {
+									if (this.readyState == 4 && this.status == 200) {
+										info = JSON.parse(this.responseText);
+										self.total_venta=info.total;
+										for (i = 0; i < info.tendencias.length; i++) {
+											self.series.push({
+												name: info.tendencias[i].fecha,
+												data: [parseFloat(info.tendencias[i].total)]
+											});
+										}
+									}
+								}
+								xhr.setRequestHeader("Content-Type", "application/json");
+								xhr.send(JSON.stringify({
+									idproducto: this.filtro_chart,
+									canal: newValue,
+									_token: '{{csrf_token()}}'
+								}));
+							}              
             ,filtro_chart_2:function(newValue){
               //console.log('Este Producto Vamos a Enviar',newValue);
-              this.series1.splice(0,this.series1.length);
+              this.series2.splice(0,this.series2.length);
               /*
               
               xhr.send(JSON.stringify(this.orden));
@@ -423,7 +426,7 @@
               if(this.readyState===4 && this.status===200){
                 let info=JSON.parse(this.responseText);
                 for(let i=0;i<info.categorias.length;i++){
-                  self.series1.push({
+                  self.series2.push({
                     name:info.categorias[i].nombre,
                     data:[info.categorias[i].total]
                   });
@@ -511,14 +514,14 @@
                 }
                 xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
                 xhr.send(JSON.stringify({
-                  genero:newValue,   // ← AQUI ESTA LA CORRECCIÓN
+                  genero:newValue,
                   _token:'{{csrf_token()}}'
                 }));
               }
             }
         }
           ,components:{
-            evndchart: VueApexCharts
+            evndchart:VueApexCharts
           }
           ,created(){
             //Datos del Chart1
@@ -548,7 +551,7 @@
               if(this.readyState===4 && this.status===200){
                 let info=JSON.parse(this.responseText); 
                 for(let i=0;i<info.categorias.length;i++){
-                  self.series1.push({
+                  self.series2.push({
                     name:info.categorias[i].nombre,
                     data:[info.categorias[i].total]
                   });
