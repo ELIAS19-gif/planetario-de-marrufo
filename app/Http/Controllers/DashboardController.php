@@ -19,6 +19,7 @@ class DashboardController extends Controller{
         $datos['edades']=Edad::all();
         $datos['ocupaciones']=Ocupacion::all();
         $datos['generos']=array('Hombre','Mujer','No indica');
+        $datos['canales']=array('WEB', 'APP', 'KIOSKO', 'TAQUILLA');
         return view('dashboard.index')->with($datos);
     }
     
@@ -63,23 +64,18 @@ class DashboardController extends Controller{
         return response()->json($resultado);
     }
 
-    function total_venta_producto(){
-        $servicio=new ServicioKPI();
-        $objeto=new \StdClass();
-        $info=$servicio->ventas_productos($objeto);
-        $resultado=new \StdCLass();
-        $resultado->top=$info[0];
-        $resultado->botton=$info[count($info)-1];
-        $resultado->productos=$info;
+    function total_venta_producto(Request $r){
+    $context = $r->all();
+    $servicio=new ServicioKPI();
+    $objeto=new \StdClass();
+    if(isset($context['genero']))
+        $objeto->genero=$context['genero'];
+    $info=$servicio->ventas_productos($objeto);
+    $resultado=new \StdCLass();
+    $resultado->productos=$info;
 
-        $objeto1=new \StdClass();
-        $objeto1->tendencias=true;
-        //$objeto1->idproducto=3;
-        $info2=$servicio->ventas_productos($objeto1);
-        $resultado->tendencias=$info2;
-        //dd($info2);
-         return response()->json($resultado);
-    }
+    return response()->json($resultado);
+}
 
     function total_ventas_categorias(Request $r){
         $context = $r->all();
@@ -104,6 +100,31 @@ class DashboardController extends Controller{
         $resultado=new \StdCLass();
         $resultado=$servicio->demografico_generos($objeto);
         //dd($info);
+        return response()->json($resultado);
+    }
+    function demografico_edad(Request $r){
+        $context=$r->all();
+        $servicio=new ServicioKPI();
+        $objeto=new \StdClass();
+        if(isset($context['idocupacion']))
+            $objeto->idocupacion=$context['idocupacion'];
+        if(isset($context['idgenero']))
+            $objeto->idgenero=$context['idgenero'];
+        $resultado=new \StdClass();
+        $resultado=$servicio->demografico_edad($objeto);
+        return response ()->json($resultado);
+    }
+
+    function ventas_producto_genero(Request $r){
+        $context=$r->all();
+        $servicio=new ServicioKPI();
+        $objeto=new \StdClass();
+        if(isset($context['genero']))
+            $objeto->genero=$context['genero'];
+        $info=$servicio->ventas_productos_genero($objeto);
+        $resultado=new \StdClass();
+        $resultado->productos=$info;
+
         return response()->json($resultado);
     }
 }

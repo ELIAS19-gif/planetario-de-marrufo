@@ -9,6 +9,7 @@ use App\Http\Controllers\ExtraController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\DbupController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UsuarioController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,16 +50,24 @@ Route::get('/producto', [ProductoController::class, 'producto'])->name ('product
 Route::get('producto/formulario/{id?}', [ProductoController::class, 'formulario'])->name ('producto.formulario');
 Route::post('producto/guardar', [ProductoController::class, 'guardar'])->name ('producto.guardar');
 
+// Catálogo Usuario
+Route::get('/usuario', [UsuarioController::class, 'lista'])->name('lista');
+Route::get('/usuario/formulario/{id?}', [UsuarioController::class, 'formulario'])->name('usuario.formulario');
+Route::post('/usuario/save', [UsuarioController::class, 'save'])->name('usuario.save');
+
 //DBup / faker
 Route::get('/dbup/cliente', [DbupController::class, 'clientes']);
 Route::get('/dbup/orden', [DbupController::class, 'orden']);
 // Route::post('/dashboard/ventas', [DashboardController::class, 'total_venta']);
 Route::match(['GET','POST'],'/dashboard/ventas', [DashboardController::class, 'total_venta']);
 Route::match(['GET','POST'],'/dashboard/ventas/categorias', [DashboardController::class, 'total_ventas_categorias']);
+Route::match(['GET','POST'],'/dashboard/ventas/producto_genero',[DashBoardController::class, 'ventas_producto_genero'])->name('ventas_producto_genero');
 Route::get('/dashboard/ventas/canal', [DashboardController::class, 'total_venta_canal']);
 Route::get('/dashboard/ventas/productos', [DashboardController::class, 'total_venta_producto']);
 Route::match(['GET','POST'],'/dashboard/demogratafico/genero', [DashboardController::class, 'demografico_genero']);
+Route::match(['GET','POST'],'/dashboard/demografico/edad',[DashboardController::class, 'demografico_edad'])->name('demografico_edad');
 Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::post('/dashboard/ventas/productos',[DashboardController::class,'ventas_producto_genero']);
 });
  
 

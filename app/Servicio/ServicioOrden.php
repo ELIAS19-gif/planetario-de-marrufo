@@ -83,6 +83,8 @@ $status (opcional)
             else
                 $ex->cantidad = 1;
 
+            $ex->precio = $extra['precio'];
+
             $total = $total + ($ex->cantidad * $extra['precio']);
             $ex->save();
         }

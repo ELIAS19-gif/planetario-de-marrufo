@@ -73,13 +73,17 @@
                       <p class="text-[#078810] text-base font-medium leading-normal">$1,250</p>
                     </div>
                   </div>
-                  <div class="flex items-center">
-                    <select v-model="filtro_chart_1" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
-                      <option value="0">Todos</option>
-                      <option v-for="producto in productos" :value="producto.id">@{{producto.nombre}}</option>
-                    </select>
-                  </div>
+                  <div class="flex-col-gap-2">
+                  <select v-model="filtro_chart_1" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                    <option value="0">Todos</option>
+                    <option v-for="producto in productos" :value="producto.id">@{{producto.nombre}}</option>
+                  </select>
+                  <select v-model="filtro_canal" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                    <option value="">Todos los canales</option>
+                    <option v-for="canal in canales" :value="canal">@{{canal}}</option>
+                  </select>
                 </div>
+              </div>
                 
                 <div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
                   <div>
@@ -123,6 +127,27 @@
                 </div>
               </div>
             </div>
+
+            <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
+  
+              <p class="text-[#181511] text-base font-medium leading-normal">
+                Ventas por producto (Hombre / Mujer)
+              </p>
+              <!-- Chart 5 -->
+              <div class="flex items-center">
+                <select v-model="filtro_chart_5"
+                  class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961]">
+                    <option value="">Todos los generos</option>
+                    <option v-for="genero in generos" :value="genero">@{{genero}}</option>
+                </select>
+              </div>
+              <evndchart
+                v-if="series5.length!=0"
+                :options="Chart5.configuracion"
+                :series="Chart5.series">
+              </evndchart>
+            </div>
+            <!-- Chart 5 -->
             <!--Renglon 2 -->
             <h2 class="text-[#181511] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Análisis demografico</h2>            
             <div class="flex flex-wrap gap-4 px-4 py-6">
@@ -144,12 +169,26 @@
                     :series="Chart3.series">
                   </evndchart>
              </div>
-             <!-- chart4 -->
-              <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
-              Aqui va la otra grafica 4
-             </div>
+             <!-- Chart4 -->
+             <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6">
+              <p class="text-[#181511] text-base font-medium leading-normal">Usuarios x edades</p>
+              <div class="flex gap-2 items-center">
+                <select v-model="filtro_chart_4.idocupacion" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                  <option value="">Todos las ocupaciones</option>
+
+                  <option v-for="ocupacion in ocupaciones" :value="ocupacion.id">@{{ocupacion.nombre}}</option>
+                </select>
+                <select v-model="filtro_chart_4.idgenero" class="custom-select h-9 cursor-pointer rounded-md border border-[#e6e1db] bg-white px-3 py-1 text-xs font-semibold text-[#897961] focus:border-[#897961] focus:ring-0">
+                  <option value="">Todos los generos</option>
+                  <option v-for="genero in generos" :value="genero">@{{genero}}</option>
+                </select>
+              </div>
+              <evndchart
+                :options="Chart4.configuracion"
+                :series="Chart4.series">
+              </evndchart>
             </div>
-            <!--Renglon 2 -->
+          <!-- Reglon 2 -->
 
             <div class="flex flex-wrap gap-4 px-4 py-6">
 <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#e6e1db] p-6 relative">
@@ -217,7 +256,7 @@
 </div>
             
             
-            
+            </div>
           </div>
         </div>
       </div>
@@ -238,17 +277,26 @@
               series1:[],
               series2:[],
               series3:[],
-              valores1:[44, 55, 13, 43, 22]
+              series4:[],
+              series5:[],
+              valores:[44, 55, 13, 43, 22]
               ,productos: <?php echo json_encode($productos);?>
               ,generos: <?php echo json_encode($generos);?>
               ,edades: <?php echo json_encode($edades);?>
               ,ocupaciones: <?php echo json_encode($ocupaciones);?>
+              ,canales: <?php echo json_encode($canales); ?>
               ,filtro_chart_1:0
+              ,filtro_canal:''
               ,filtro_chart_2:''
               ,filtro_chart_3:{
                 idedad:0
                 ,idocupacion:0
               }
+              ,filtro_chart_4: {
+                idocupacion: 0,
+                idgenero: 0
+          }
+              ,filtro_chart_5:''
             }
           }
           ,computed:{
@@ -274,12 +322,36 @@
               series:[]
               ,configuracion:plantilla
               }
-              for(i=0;i<this.series3.length;i++){
+              for(let i=0;i<this.series3.length;i++){
                 final.series.push(this.series3[i].total)
                 final.configuracion.labels.push(this.series3[i].genero);
               }
               return final;
             }
+            ,Chart4:function (){
+              let plantilla = Pie();
+
+              let final={
+                series:[],
+                configuracion:plantilla
+              }
+
+              for(let i=0;i<this.series4.length;i++){
+                final.series.push(this.series4[i].total)
+                final.configuracion.labels.push(this.series4[i].edad);
+              }
+
+              return final;
+            }
+            ,Chart5: function() {
+						let plantilla = Columna();
+						// solo una categoría en X
+						plantilla.xaxis.categories = ['Ventas'];
+						return {
+							series: this.series5,
+							configuracion: plantilla
+						}
+					}
           }
           ,watch:{
             filtro_chart_1:function(newValue){
@@ -297,7 +369,7 @@
                 let info=JSON.parse(this.responseText);
                 console.log('Ya cayeron los datos',info);
                 self.total_venta=info.total;
-                for(let i=0;i<info.tendencias.length;i++){
+                for (let i = 0; i < info.tendencias.length; i++) {
                   self.series.push({
                     name:info.tendencias[i].fecha,
                     data:[info.tendencias[i].total]
@@ -308,8 +380,34 @@
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify({
                                     idproducto:newValue
+                                    ,canal:this.filtro_canal
                                     ,_token:'{{csrf_token()}}'
                                   }));
+          }
+          ,filtro_canal:function(newValue){
+              this.series.splice(0,this.series.length);
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST','/dashboard/ventas',true);
+              var self=this;
+              xhr.onreadystatechange=function(){
+                if(this.readyState===4 && this.status===200){
+                  let info=JSON.parse(this.responseText);
+                  self.total_venta=info.total;
+              for(let i=0;i<info.tendencias.length;i++){
+                  self.series.push({
+                    name:info.tendencias[i].fecha,
+                    data:[info.tendencias[i].total]
+              });
+            }
+          }
+        }
+              xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+
+              xhr.send(JSON.stringify({
+              idproducto:this.filtro_chart_1,
+              canal:newValue,
+              _token:'{{csrf_token()}}'
+            }));
           }              
             ,filtro_chart_2:function(newValue){
               //console.log('Este Producto Vamos a Enviar',newValue);
@@ -361,6 +459,62 @@
                                   }));
               }
               ,deep:true
+            }
+            ,filtro_chart_4: {
+          handler: function(newValue) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST','/dashboard/demografico/edad',true);
+            var self = this;
+            xhr.onreadystatechange = function() {
+              if (this.readyState == 4) {
+
+                //Pregunto si todo salio bien
+                if (this.status == 200) {
+                  self.series4.splice(0,self.series4.length);
+                  info = JSON.parse(this.responseText);
+                  // self.total_ventas = info.total;
+                  for (i = 0; i < info.length; i++) {
+                    self.series4.push(info[i]);
+                  }
+                  // console.log('ya calleron los datos', info);
+                }
+
+              }
+
+            }
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({
+            idocupacion: newValue.idocupacion
+            ,idgenero: newValue.idgenero
+            ,_token: '{{csrf_token()}}'
+          }));
+          },
+          deep: true
+        }
+            ,filtro_chart_5:{
+              handler:function(newValue){
+                // limpiar datos anteriores
+                this.series5.splice(0,this.series5.length);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST','{{route("ventas_producto_genero")}}',true);
+                var self=this;
+                xhr.onreadystatechange=function(){
+                  if(this.readyState===4 && this.status===200){
+                    let info=JSON.parse(this.responseText);
+                    for(let i=0;i<info.productos.length;i++){
+                      self.series5.push({
+                        name:info.productos[i].nombre,
+                        data:[parseFloat(info.productos[i].total)]
+                      });
+                    }
+                  }
+                }
+                xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+                xhr.send(JSON.stringify({
+                  genero:newValue,   // ← AQUI ESTA LA CORRECCIÓN
+                  _token:'{{csrf_token()}}'
+                }));
+              }
             }
         }
           ,components:{
@@ -416,6 +570,46 @@
               }
             }
             xhr.send();
+
+            // Datos del chart4
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','/dashboard/demografico/edad',true);
+            var self = this;
+            xhr.onreadystatechange = function() {
+              if (this.readyState == 4) {
+                //Pregunto si todo salio bien
+                if (this.status == 200) {
+                  info = JSON.parse(this.responseText);
+                  // self.total_ventas = info.total;
+                  for (i = 0; i < info.length; i++) {
+                    self.series4.push(info[i]);
+                  }
+                  // console.log('ya calleron los datos', info);
+                }
+              }
+            }
+            xhr.send();
+
+            //DATOS DEL CHART5
+					var xhr = new XMLHttpRequest();
+					xhr.open('POST', '/dashboard/ventas/producto_genero', true);
+					var self = this;
+					xhr.onreadystatechange = function() {
+						if (this.readyState == 4 && this.status == 200) {
+							let info = JSON.parse(this.responseText);
+							for (let i = 0; i < info.productos.length; i++) {
+								self.series5.push({
+									name: info.productos[i].nombre,
+									data: [parseFloat(info.productos[i].total)]
+								});
+							}
+						}
+					}
+					xhr.setRequestHeader("Content-Type", "application/json");
+					xhr.send(JSON.stringify({
+						genero: '',
+						_token: '{{csrf_token()}}'
+					}));
           }
         });
     </script>
